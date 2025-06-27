@@ -1,0 +1,11 @@
+{
+  "version": 2,
+  "builds": [
+    { "src": "server/server.js", "use": "@vercel/node" }
+  ],
+  "installCommand": "npm install --prefix server",
+  "routes": [
+    { "src": "^/api/(.*)$", "dest": "server/server.js" },
+    { "src": "^/(.*)$", "dest": "server/server.js" }
+  ]
+}
