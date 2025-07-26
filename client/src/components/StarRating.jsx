@@ -5,7 +5,7 @@ const StarRating = ({ rating = 5 }) => {
   return (
     <div className="flex items-center">
       {Array.from({ length: 5 }, (_, i) => (
-        <img key={i} src={i < rating ? assets.starIconFilled : assets.starIconOutlined} alt="star" className="w-4.5 h-4.5" />
+        <img key={i} src={i < rating ? assets.starIconFilled : assets.starIconOutlined} alt="star" className="w-3.5 h-3.5" />
       ))}
     </div>
   )
