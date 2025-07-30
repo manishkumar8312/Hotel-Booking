@@ -19,11 +19,22 @@ app.use(clerkMiddleware());
 app.use('/api/clerk', clerkWebhooks);
 
 app.get('/', (req, res) => {
-    res.send("API is working")
-})
+    res.send("API is Up and running");
+});
 
+//404 error handling
+app.use((req,res,next)=>{
+    res.status(404).json({message:"Route not found"});
+   
+});
+
+//global error handler
+app.use((err,req,res,next)=>{
+    console.error(err.stack);
+    res.status(500).json({message:"Internal Server Error"});
+});
 const PORT = process.env.PORT  || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)
-})
+});
