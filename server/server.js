@@ -1,39 +1,44 @@
 import express from "express";
 import "dotenv/config";
+
 import cors from "cors";
 import connectDB from "./configs/db.js";
 import { clerkMiddleware } from '@clerk/express'
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
+import userRoutes from "./routes/userRoutes.js";
+
 connectDB();
 
 const app = express();
 
 app.use(cors()); // Enable Cross-Origin Resource Sharing
+
 //MiddleWare
 app.use(express.json());
 app.use(clerkMiddleware());
 
-
 //API to listen to clerk Webhooks
-
 app.use('/api/clerk', clerkWebhooks);
+
+// User management routes (protected with RBAC)
+app.use('/api/users', userRoutes);
 
 app.get('/', (req, res) => {
     res.send("API is Up and running");
 });
 
 //404 error handling
-app.use((req,res,next)=>{
-    res.status(404).json({message:"Route not found"});
-   
+app.use((req, res, next) => {
+    res.status(404).json({ message: "Route not found" });
 });
 
 //global error handler
-app.use((err,req,res,next)=>{
+app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({message:"Internal Server Error"});
+    res.status(500).json({ message: "Internal Server Error" });
 });
-const PORT = process.env.PORT  || 3000;
+
+const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
     console.log(`Server is running on port ${PORT}`)

@@ -1,13 +1,18 @@
+// server/configs/db.js
+
 import mongoose from "mongoose";
 
 const connectDB = async () => {
     try {
-        mongoose.connection.on('connected', () => {
-            console.log('Database connected');
-        });
-        await mongoose.connect(`${process.env.MONGODB_URI}/hotel-booking`);
+        // Use the CORRECT environment variable name (`MONGO_URI`)
+        // and do NOT add the database name again.
+        await mongoose.connect(process.env.MONGO_URI);
+
+        console.log("MongoDB Connected Successfully!");
     } catch (error) {
-        console.log(error.message);
+        console.error("MongoDB Connection FAILED:", error.message);
+        // Exit the process with a failure code if we can't connect to the DB
+        process.exit(1); 
     }
 };
 
