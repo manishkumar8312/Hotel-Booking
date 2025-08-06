@@ -19,6 +19,7 @@ const clerkWebhooks = async (req, res) => {
             email: data.email_addresses[0].email_address,
             username: data.first_name + " " + data.last_name,
             image: data.image_url,
+            role:ata.public_metadata?.role || "user"
         }
 
         //Switch case for different types of events
