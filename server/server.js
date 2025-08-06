@@ -4,6 +4,7 @@ import cors from "cors";
 import connectDB from "./configs/db.js";
 import { clerkMiddleware } from '@clerk/express'
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
+import hotelRoutes from "./routes/hotelRoutes.js";
 connectDB();
 
 const app = express();
@@ -13,11 +14,17 @@ app.use(cors()); // Enable Cross-Origin Resource Sharing
 app.use(express.json());
 app.use(clerkMiddleware());
 
-
 //API to listen to clerk Webhooks
-
 app.use('/api/clerk', clerkWebhooks);
 
+//hotel routes
+app.use('/api/hotels',hotelRoutes);
+
+//user routes
+// import userRoutes from "./routes/userRoutes.js";
+// app.use("/api/users", userRoutes);
+
+//test api
 app.get('/', (req, res) => {
     res.send("API is Up and running");
 });
