@@ -2,39 +2,49 @@ import express from "express";
 import "dotenv/config";
 import cors from "cors";
 import connectDB from "./configs/db.js";
-import { clerkMiddleware } from '@clerk/express'
+import { clerkMiddleware } from "@clerk/express";
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
+
+// ✅ Import controllers
+import { getRooms, getRoomById } from "./controllers/roomController.js";
+import { getBookings } from "./controllers/bookingController.js";
+
+// ✅ Connect to MongoDB
 connectDB();
 
 const app = express();
 
-app.use(cors()); // Enable Cross-Origin Resource Sharing
-//MiddleWare
-app.use(express.json());
-app.use(clerkMiddleware());
+// ✅ Middleware
+app.use(cors({ origin: process.env.CLIENT_URL || "*", credentials: true })); // Allow frontend URL
+app.use(express.json({ limit: "10mb" })); // Handle larger JSON payloads
+app.use(clerkMiddleware()); // Clerk authentication middleware
 
-
-//API to listen to clerk Webhooks
-
-app.use('/api/clerk', clerkWebhooks);
-
-app.get('/', (req, res) => {
-    res.send("API is Up and running");
+// ✅ Health Check Route
+app.get("/", (req, res) => {
+  res.status(200).json({ success: true, message: "API is Up and Running 🚀" });
 });
 
-//404 error handling
-app.use((req,res,next)=>{
-    res.status(404).json({message:"Route not found"});
-   
+// ✅ Clerk Webhook (must be BEFORE other routes if it uses raw body)
+app.post("/api/clerk", clerkWebhooks);
+
+// ✅ API Routes
+app.get("/api/rooms", getRooms);
+app.get("/api/rooms/:id", getRoomById);
+app.get("/api/bookings", getBookings);
+
+// ✅ 404 Error Handling
+app.use((req, res) => {
+  res.status(404).json({ success: false, message: "Route not found" });
 });
 
-//global error handler
-app.use((err,req,res,next)=>{
-    console.error(err.stack);
-    res.status(500).json({message:"Internal Server Error"});
+// ✅ Global Error Handler
+app.use((err, req, res, next) => {
+  console.error("🔥 Server Error:", err.stack);
+  res.status(500).json({ success: false, message: "Internal Server Error" });
 });
-const PORT = process.env.PORT  || 3000;
 
+// ✅ Start Server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`)
+  console.log(`✅ Server running on http://localhost:${PORT}`);
 });
