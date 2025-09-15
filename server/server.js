@@ -4,6 +4,8 @@ import cors from "cors";
 import connectDB from "./configs/db.js";
 import { clerkMiddleware } from '@clerk/express'
 import clerkWebhooks from "./controllers/clerkWebhooks.js";
+import { createBooking, verifyPayment } from './controllers/razorpayGateway.js';
+
 connectDB();
 
 const app = express();
@@ -17,6 +19,10 @@ app.use(clerkMiddleware());
 //API to listen to clerk Webhooks
 
 app.use('/api/clerk', clerkWebhooks);
+
+//API to handle razorpay Payments
+app.use('/api/payment/create-booking', createBooking);
+app.use('/api/payment/verify-payment', verifyPayment);
 
 app.get('/', (req, res) => {
     res.send("API is Up and running");
