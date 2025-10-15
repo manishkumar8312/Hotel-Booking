@@ -1,26 +1,42 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { assets } from '../assets/assets'
+import { useTheme } from '../contexts/ThemeContext'
 
 const HotelCard = ({room,index}) => {
+  const { theme } = useTheme();
+
   return (
-    <Link to={'/rooms/'+room._id} onClick={() => scrollTo(0,0)} key={room._id} className='relative max-w-70 w-full rounded-xl overflow-hidden bg-white text-gray-500/90 shadow-[0px_4px_4px_rgba(0,0,0,0.05)]'>
-        <img src={room.images[0]} alt="" className='relative max-w-70 w-full rounded-xl overflow-hidden bg-white text-gray-500/90 shadow-[0px_4px_4px_rgba(0,0,0,0.05)]'/>
-        {index %2 === 0 && <p className='px-3 py-1 absolute top-3 left-3 text-xs bg-white text-gray-800 font-medium rounded-full'>Best Seller</p>}
+    <Link
+      to={'/rooms/'+room._id}
+      onClick={() => scrollTo(0,0)}
+      key={room._id}
+      className={`relative max-w-70 w-full rounded-xl overflow-hidden ${theme === 'dark' ? 'bg-surface text-[var(--text)] shadow-card border border-card-border' : 'bg-white text-gray-500/90 shadow-[0px_4px_4px_rgba(0,0,0,0.05)]'}`}
+    >
+        <img src={room.images[0]} alt="" className='w-full h-auto block' />
+        {index % 2 === 0 && (
+          <p className={`px-3 py-1 absolute top-3 left-3 text-xs font-medium rounded-full ${theme === 'dark' ? 'bg-[rgba(255,255,255,0.04)] text-[var(--text)]' : 'bg-white text-gray-800'}`}>
+            Best Seller
+          </p>
+        )}
         <div className='p-4 pt-5'>
             <div className='flex items-center justify-between'>
-                <p className='font-playfair text-xl font-medium text-gray-800'>{room.hotel.name}</p>
+                <p className={`font-playfair text-xl font-medium ${theme === 'dark' ? 'text-[var(--text)]' : 'text-gray-800'}`}>{room.hotel.name}</p>
                 <div className='flex items-center gap-1'>
                     <img src={assets.starIconFilled} alt="star-icon" /> 4.5
                 </div>
             </div>
-            <div className='flex items-center gap-1 text-sm'>
+            <div className={`flex items-center gap-1 text-sm ${theme === 'dark' ? 'text-muted' : ''}`}>
                 <img src={assets.locationIcon} alt="location-icon" />
                 <span>{room.hotel.address}</span>
             </div>
             <div className='flex items-center justify-between mt-4'>
-                <p><span className='text-xl text-gray-800'>${room.pricePerNight}</span> /night</p>
-                <button className='text-sm font-medium border border-gray-300 hover:bg-gray-50 px-4 py-2 rounded transition-all cursor-pointer'>Book Now</button>
+                <p>
+                  <span className={`text-xl ${theme === 'dark' ? 'text-[var(--text)]' : 'text-gray-800'}`}>${room.pricePerNight}</span> /night
+                </p>
+                <button className={`text-sm font-medium px-4 py-2 rounded transition-all cursor-pointer ${theme === 'dark' ? 'border border-card-border bg-transparent hover:bg-[rgba(255,255,255,0.03)] text-[var(--text)]' : 'border border-gray-300 hover:bg-gray-50'}`}>
+                  Book Now
+                </button>
             </div>
         </div>
     </Link>

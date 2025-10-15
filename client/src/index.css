@@ -11,3 +11,80 @@
 .font-playfair{
   font-family: Playfair !important;
 }
+
+/* Default (light) variables */
+:root {
+  --bg: #ffffff;
+  --surface: #f8fafc;
+  --text: #0f1720;
+  --muted: #6b7280;
+  --primary: #2563eb;
+  --card-border: rgba(15,23,32,0.06);
+  --shadow: 0 1px 3px rgba(2,6,23,0.08);
+}
+
+/* Dark theme variables applied via data-theme attr on <html> */
+[data-theme="dark"] {
+  --bg: #0b1220;
+  --surface: #081022;
+  --text: #e6eef7;
+  --muted: #9aa6b2;
+  --primary: #60a5fa;
+  --card-border: rgba(255,255,255,0.06);
+  --shadow: 0 2px 12px rgba(2,6,23,0.6);
+}
+
+/* Apply variables */
+html, body, #root {
+  height: 100%;
+  background-color: var(--bg);
+  color: var(--text);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* Utility classes that might be needed by components */
+.bg-surface {
+  background-color: var(--surface);
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.text-muted {
+  color: var(--muted);
+}
+
+.border-card {
+  border-color: var(--card-border);
+}
+
+.shadow-card {
+  box-shadow: var(--shadow);
+}
+
+/* Toggle button basic styles */
+.theme-toggle {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--text);
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.theme-toggle:active {
+  transform: scale(0.96);
+}
+
+/* small icon sizing */
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  display: block;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.5;
+}
