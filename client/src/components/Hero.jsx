@@ -9,10 +9,7 @@ const Hero = () => {
     <div
       className={`relative flex flex-col items-start justify-center px-6 md:px-16 lg:px-24 xl:px-32 bg-[url("/src/assets/heroImage.png")] bg-no-repeat bg-cover bg-center h-screen transition-colors duration-300 ${theme === 'dark' ? 'text-[var(--text)]' : 'text-white'}`}
     >
-      {/* dark overlay to dim image and make it obvious theme changed */}
-      {theme === 'dark' && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 pointer-events-none" />
-      )}
+      {/* removed overlay so the hero image stays unchanged in dark mode */}
 
       <div className="relative z-10 max-w-3xl">
         <p className={`${theme === 'dark' ? 'bg-[rgba(255,255,255,0.04)] text-muted' : 'bg-[#49B9FF]/50'} px-3.5 py-1 rounded-full mt-20 inline-block`}>

@@ -88,3 +88,7 @@ html, body, #root {
   stroke: currentColor;
   stroke-width: 1.5;
 }
+body {
+  background-color: var(--bg);
+  color: var(--text);
+}
