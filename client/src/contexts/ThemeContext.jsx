@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useLayoutEffect, useState } from "react";
 
 const ThemeContext = createContext({
   theme: "light",
@@ -6,26 +6,29 @@ const ThemeContext = createContext({
 });
 
 export const ThemeProvider = ({ children }) => {
-  const [theme, setTheme] = useState("light");
-
-  // initialize theme from localStorage or system preference
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    if (stored === "light" || stored === "dark") {
-      setTheme(stored);
-      document.documentElement.setAttribute("data-theme", stored);
-      return;
+  // initialize synchronously from localStorage or system preference to avoid flash
+  const [theme, setTheme] = useState(() => {
+    try {
+      const stored = typeof window !== "undefined" && localStorage.getItem("theme");
+      if (stored === "light" || stored === "dark") return stored;
+      const prefersDark =
+        typeof window !== "undefined" &&
+        window.matchMedia &&
+        window.matchMedia("(prefers-color-scheme: dark)").matches;
+      return prefersDark ? "dark" : "light";
+    } catch {
+      return "light";
     }
-    const prefersDark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
-    const initial = prefersDark ? "dark" : "light";
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
-  }, []);
+  });
 
-  // persist and apply theme whenever it changes
-  useEffect(() => {
-    document.documentElement.setAttribute("data-theme", theme);
-    localStorage.setItem("theme", theme);
+  // apply and persist before paint to prevent default flash
+  useLayoutEffect(() => {
+    try {
+      document.documentElement.setAttribute("data-theme", theme);
+    } catch {}
+    try {
+      localStorage.setItem("theme", theme);
+    } catch {}
   }, [theme]);
 
   const toggleTheme = () => setTheme((t) => (t === "dark" ? "light" : "dark"));
