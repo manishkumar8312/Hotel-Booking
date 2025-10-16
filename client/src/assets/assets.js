@@ -137,7 +137,48 @@ export const hotelDummyData = {
     "city": "New York",
     "createdAt": "2025-04-10T06:22:11.663Z",
     "updatedAt": "2025-04-10T06:22:11.663Z",
-    "__v": 0
+    "__v": 0,
+    "coordinates": { "lat": 40.7128, "lng": -74.0060 }
+}
+
+// Additional Hotel Data for Map View
+export const hotelDummyData2 = {
+    "_id": "67f76393197ac559e4089b73",
+    "name": "Manhattan Plaza Hotel",
+    "address": "Broadway 456 Avenue, Midtown",
+    "contact": "+0123456790",
+    "owner": userDummyData,
+    "city": "New York",
+    "createdAt": "2025-04-10T06:22:11.663Z",
+    "updatedAt": "2025-04-10T06:22:11.663Z",
+    "__v": 0,
+    "coordinates": { "lat": 40.7589, "lng": -73.9851 }
+}
+
+export const hotelDummyData3 = {
+    "_id": "67f76393197ac559e4089b74",
+    "name": "Brooklyn Heights Inn",
+    "address": "Remsen Street 789, Brooklyn Heights",
+    "contact": "+0123456791",
+    "owner": userDummyData,
+    "city": "New York",
+    "createdAt": "2025-04-10T06:22:11.663Z",
+    "updatedAt": "2025-04-10T06:22:11.663Z",
+    "__v": 0,
+    "coordinates": { "lat": 40.6962, "lng": -73.9969 }
+}
+
+export const hotelDummyData4 = {
+    "_id": "67f76393197ac559e4089b75",
+    "name": "Central Park View Hotel",
+    "address": "Central Park West 321, Upper West Side",
+    "contact": "+0123456792",
+    "owner": userDummyData,
+    "city": "New York",
+    "createdAt": "2025-04-10T06:22:11.663Z",
+    "updatedAt": "2025-04-10T06:22:11.663Z",
+    "__v": 0,
+    "coordinates": { "lat": 40.7829, "lng": -73.9654 }
 }
 
 // Rooms Dummy Data
@@ -156,7 +197,7 @@ export const roomsDummyData = [
     },
     {
         "_id": "67f76452197ac559e4089b8e",
-        "hotel": hotelDummyData,
+        "hotel": hotelDummyData2,
         "roomType": "Double Bed",
         "pricePerNight": 299,
         "amenities": ["Room Service", "Mountain View", "Pool Access"],
@@ -168,7 +209,7 @@ export const roomsDummyData = [
     },
     {
         "_id": "67f76406197ac559e4089b82",
-        "hotel": hotelDummyData,
+        "hotel": hotelDummyData3,
         "roomType": "Double Bed",
         "pricePerNight": 249,
         "amenities": ["Free WiFi", "Free Breakfast", "Room Service"],
@@ -180,7 +221,7 @@ export const roomsDummyData = [
     },
     {
         "_id": "67f763d8197ac559e4089b7a",
-        "hotel": hotelDummyData,
+        "hotel": hotelDummyData4,
         "roomType": "Single Bed",
         "pricePerNight": 199,
         "amenities": ["Free WiFi", "Room Service", "Pool Access"],
