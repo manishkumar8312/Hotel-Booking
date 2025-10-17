@@ -59,13 +59,13 @@ const HotelMap = () => {
         </p>
       </div>
       
-      <div className="w-full h-[70vh] md:h-[80vh] rounded-xl overflow-hidden shadow-lg border border-gray-200">
+      <div className="w-full h-[70vh] md:h-[80vh] rounded-xl overflow-hidden shadow-lg border border-gray-200 relative z-10">
         <MapContainer 
           center={defaultCenter} 
           zoom={13} 
           scrollWheelZoom={true} 
           className="w-full h-full"
-          style={{ minHeight: '500px' }}
+          style={{ minHeight: '500px', zIndex: 1 }}
         >
           <TileLayer
             attribution='&copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors'
