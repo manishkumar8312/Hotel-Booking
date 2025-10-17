@@ -1,8 +1,134 @@
 import React, { useState } from 'react'
 import Title from '../components/Title'
-import { assets, userBookingsDummyData } from '../assets/assets'
+import { assets, userBookingsDummyData, userDummyData } from '../assets/assets'
+import { loadRazorpayScript } from '../utils/rzpUitl'
+
 const MyBookings = () => {
     const [bookings, setBookings] = useState(userBookingsDummyData);
+    const [error, setError] = useState(null);
+
+     const handlePayment = async () => {
+            const isScriptLoaded = await loadRazorpayScript();
+            if (!isScriptLoaded) {
+              console.error({ type: 'error', message: 'Failed to load Razorpay SDK. Please check your connection.' });
+              return;
+            }
+
+          try {
+            // create the Razorpay booking on the server
+            const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/payment/create-booking`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                amount: userBookingsDummyData[1].totalPrice, // booking amount from dummy data
+                currency: 'INR',
+                receipt: `booking_${new Date().getTime()}`,
+              }),
+            });
+      
+            if (!response.ok) {
+              throw new Error('Failed to create Razorpay order.');
+            }
+      
+            const { booking } = await response.json();
+
+            // Now that we've the booking, initiate Razorpay payment
+            const razorpayOptions = {
+              key: import.meta.env.VITE_APP_RZP_KEY_ID,
+              amount: userBookingsDummyData[1].totalPrice * 100,
+              currency: 'INR',
+              name: 'QuickStay',
+              description: 'Booking Payment',
+              order_id: booking.id,
+              handler: function (response) {
+                // Verify the payment signature in backend
+                fetch(`${import.meta.env.VITE_BACKEND_URL}/api/payment/verify-payment`, {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                  },
+                  body: JSON.stringify({
+                    razorpay_order_id: response.razorpay_order_id,
+                    razorpay_payment_id: response.razorpay_payment_id,
+                    razorpay_signature: response.razorpay_signature,
+                  }),
+                })
+                  .then((res) => res.json())
+                  .then((data) => {
+                    if (data.success) {
+                        // Payment is successful, submit the booking to the backend
+                        //submitBooking();
+                        alert('Payment Successful! Booking has been placed.');
+                    } else {
+                      alert('Payment verification failed.');
+                    }
+                  })
+                  .catch((err) => {
+                    alert('Error verifying payment: ' + err.message);
+                  });
+              },
+              prefill: {
+                // User details can be fetched from user profile, currently hardcoded for demo
+                name: userDummyData?.username || 'Guest',
+                email: userDummyData?.email || 'customer@example.com',
+                contact: userDummyData?.contact || '1234567890',
+              },
+              theme: {
+                color: '#663cc79a',
+              },
+            };
+            console.log(razorpayOptions);
+      
+            const razorpayInstance = new window.Razorpay(razorpayOptions);
+            razorpayInstance.open();
+          } catch (err) {
+            console.error('Error initiating Razorpay payment:', err);
+            setError('Payment failed. Please try again.');
+          }
+      };
+
+    // const submitBooking = async () => {
+        // const bookingData = {
+        //     hotelId: userBookingsDummyData.hotelId,
+        //     roomId: userBookingsDummyData.roomId,
+        //     userId: userBookingsDummyData.userId,
+        //     guests: userBookingsDummyData.guests,
+        //     checkInDate: userBookingsDummyData.checkInDate,
+        //     checkOutDate: userBookingsDummyData.checkOutDate,
+        //     roomType: userBookingsDummyData.roomType,
+        //     totalPrice: userBookingsDummyData.totalPrice,
+        //     isPaid: true,
+        //     paymentMethod: 'Razorpay',
+        //     boookingId: userBookingsDummyData.bookingId,
+        //     date: new Date().toLocaleString(),
+            
+        // };
+
+    //     try {
+    //         const response = await fetch('${import.meta.env.VITE_BACKEND_URL}/api/bookings', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify(bookingData),
+    //         });
+
+    //         if (!response.ok) {
+    //             throw new Error(`Failed to submit booking: ${response.statusText}`);
+    //         }
+    //         const result = await response.json();
+    //         console.log('Booking submitted successfully:', result);
+
+    //     } catch (err) {
+    //         console.error('Error placing booking:', err);
+    //         setError('Failed to place the booking. Please try again later.');
+        //     }
+    // console.log('Booking Data:', bookingData);
+
+    
+
   return (
     <div className="pt-20">
       <div className='max-w-6xl mx-auto w-full text-gray-800'>
@@ -54,7 +180,7 @@ const MyBookings = () => {
 
                   </div>
                   {!booking.isPaid && (
-                    <button className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'>Pay Now</button>
+                    <button onClick={handlePayment} className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'>Pay Now</button>
                   )}
                 </div>
             </div>
