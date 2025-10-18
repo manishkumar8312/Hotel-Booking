@@ -67,7 +67,7 @@ QuickStay/
 ```bash
 cd server
 npm install
-npm run server   # Starts Express backend using nodemon
+npm run server   # Starts Express backend using nodemon (default http://localhost:3000)
 ```
 
 ### 🌐 Frontend (Client)
@@ -75,7 +75,7 @@ npm run server   # Starts Express backend using nodemon
 ```bash
 cd client
 npm install
-npm start        # Starts React frontend on http://localhost:3000
+npm run dev      # Starts Vite dev server (defaults to http://localhost:5173)
 ```
 
 ---
@@ -87,19 +87,20 @@ Create `.env` files in both `server/` and `client/` with the following:
 ### For Server
 
 ```
-PORT=5000
-MONGO_URI=your_mongodb_uri
+PORT=3000
+MONGODB_URI=your_mongodb_connection_string # e.g. mongodb://localhost:27017
 CLOUDINARY_CLOUD_NAME=your_cloud_name
 CLOUDINARY_API_KEY=your_api_key
 CLOUDINARY_API_SECRET=your_api_secret
 CLERK_SECRET_KEY=your_clerk_secret
+CLERK_WEBHOOK_SECRET=your_clerk_webhook_secret
 ```
 
 ### For Client
 
 ```
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key
-VITE_API_BASE_URL=http://localhost:5000/api
+VITE_API_BASE_URL=http://localhost:3000/api
 ```
 
 ---
@@ -129,7 +130,16 @@ VITE_API_BASE_URL=http://localhost:5000/api
 Feel free to fork this project and raise a Pull Request.
 
 ```bash
-git clone https://github.com/manishkumar8312/QuickStay.git
+git clone https://github.com/manishkumar8312/Hotel-Booking.git
+```
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed setup, coding standards, and PR process. Please follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
+You can also use the provided `.env.example` files in both `server/` and `client/` as templates:
+
+```
+cp server/.env.example server/.env
+cp client/.env.example client/.env
 ```
 
 ---

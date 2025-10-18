@@ -104,7 +104,7 @@ const Navbar = (props) => {
                         <UserButton.MenuItems>
                             <UserButton.Action label="My Bookings" labelIcon={<BookIcon/>} onClick={()=> navigate('/my-bookings')}/>
                         </UserButton.MenuItems>
-                    </UserButton>) : (<button onClick={openSignIn} className={`${theme === 'dark' ? 'bg-[var(--primary)] text-white px-4 py-2.5 rounded-full' : 'bg-black text-white px-8 py-2.5 rounded-full ml-4'} transition-all duration-500`}>
+                    </UserButton>) : (<button onClick={()=> navigate('/login')} className={`${theme === 'dark' ? 'bg-[var(--primary)] text-white px-4 py-2.5 rounded-full' : 'bg-black text-white px-8 py-2.5 rounded-full ml-4'} transition-all duration-500`}>
                         Login
                     </button>)}
                     
@@ -136,7 +136,7 @@ const Navbar = (props) => {
                         Dashboard
                     </button>}
 
-                    {!user && <button onClick={openSignIn} className={`px-8 py-2.5 rounded-full transition-all duration-500 ${theme === 'dark' ? 'bg-[var(--primary)] text-white' : 'bg-black text-white'}`}>
+                    {!user && <button onClick={()=> navigate('/login')} className={`px-8 py-2.5 rounded-full transition-all duration-500 ${theme === 'dark' ? 'bg-[var(--primary)] text-white' : 'bg-black text-white'}`}>
                         Login
                     </button>}
                 </div>

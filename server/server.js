@@ -22,16 +22,25 @@ app.get('/', (req, res) => {
     res.send("API is Up and running");
 });
 
-//404 error handling
-app.use((req,res,next)=>{
-    res.status(404).json({message:"Route not found"});
-   
+// 404 handler (after all routes)
+app.use((req, res, next) => {
+    res.status(404).type('application/json').json({
+        success: false,
+        status: 404,
+        message: "Route not found",
+        path: req.originalUrl
+    });
 });
 
-//global error handler
-app.use((err,req,res,next)=>{
+// Global error handler
+app.use((err, req, res, next) => {
     console.error(err.stack);
-    res.status(500).json({message:"Internal Server Error"});
+    const status = err.status || 500;
+    res.status(status).type('application/json').json({
+        success: false,
+        status,
+        message: err.message || "Internal Server Error"
+    });
 });
 const PORT = process.env.PORT  || 3000;
 
