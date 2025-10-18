@@ -1,18 +1,116 @@
 import React, { useState, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { useAuth } from '@clerk/clerk-react';
 import { roomsDummyData, assets, facilityIcons, roomCommonData } from '../assets/assets';
 import StarRating from '../components/StarRating';
+import { bookingService } from '../services/bookingService';
 
 const RoomDetails = () => {
     const {id} = useParams();
+    const navigate = useNavigate();
+    const { isSignedIn, getToken } = useAuth();
+    
     const [room, setRoom] = useState(null);
     const [mainImage, setMainImage] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    
+    // Form state
+    const [formData, setFormData] = useState({
+        checkInDate: '',
+        checkOutDate: '',
+        guests: 1
+    });
+
     useEffect(()=>{
         const room = roomsDummyData.find(room => room._id === id);
         room && setRoom(room);
         room && setMainImage(room.images[0]);
-    },[])
-  return room &&(
+    },[id])
+
+    const handleInputChange = (e) => {
+        const { id, value } = e.target;
+        setFormData(prev => ({
+            ...prev,
+            [id]: value
+        }));
+    };
+
+    const calculateTotalPrice = () => {
+        if (!formData.checkInDate || !formData.checkOutDate || !room) {
+            return 0;
+        }
+        
+        const checkIn = new Date(formData.checkInDate);
+        const checkOut = new Date(formData.checkOutDate);
+        const nights = Math.ceil((checkOut - checkIn) / (1000 * 60 * 60 * 24));
+        
+        return nights > 0 ? nights * room.pricePerNight : 0;
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError(null);
+
+        // Check if user is signed in
+        if (!isSignedIn) {
+            alert('Please sign in to make a booking');
+            navigate('/sign-in');
+            return;
+        }
+
+        // Validate dates
+        const checkIn = new Date(formData.checkInDate);
+        const checkOut = new Date(formData.checkOutDate);
+        
+        if (checkIn >= checkOut) {
+            setError('Check-out date must be after check-in date');
+            return;
+        }
+
+        if (checkIn < new Date()) {
+            setError('Check-in date cannot be in the past');
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const totalPrice = calculateTotalPrice();
+            
+            const bookingData = {
+                hotelId: room.hotel._id || room._id, // Adjust based on your data structure
+                roomId: room._id,
+                checkInDate: formData.checkInDate,
+                checkOutDate: formData.checkOutDate,
+                guests: parseInt(formData.guests),
+                totalPrice,
+                hotelSnapshot: {
+                    name: room.hotel.name,
+                    address: room.hotel.address,
+                    city: room.hotel.city
+                },
+                roomSnapshot: {
+                    roomType: room.roomType,
+                    images: room.images,
+                    amenities: room.amenities
+                }
+            };
+
+            const result = await bookingService.createBooking(bookingData, getToken);
+            
+            alert('Booking created successfully!');
+            navigate('/my-bookings');
+            
+        } catch (error) {
+            setError(error.message || 'Failed to create booking');
+            console.error('Booking error:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+  return room && (
     <div className='py-28 md:py-35 px-4 md:px-16 lg:px-24 xl:px-32'>
         {/* {Room Details} */}
         <div className='flex flex-col md:flex-row items-start md:items-center gap-2'>
@@ -57,26 +155,68 @@ const RoomDetails = () => {
             <p className='text-2xl font-medium font-playfair'>${room.pricePerNight}/night</p>
         </div>
         {/* Checkin Checkout form */}
-        <form className='flex flex-col md:flex-row justify-between mt-16 items-start md:items-center bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl mx-auto max-w-6xl'>
+        <form onSubmit={handleSubmit} className='flex flex-col md:flex-row justify-between mt-16 items-start md:items-center bg-white shadow-[0px_0px_20px_rgba(0,0,0,0.15)] p-6 rounded-xl mx-auto max-w-6xl'>
             <div className='flex flex-col flex-wrap md:gap-10 text-gray-500 md:flex-row items-start md:items-center gap-4'>
 
                 <div className='flex flex-col'>
                     <label htmlFor="checkInDate" className='font-medium'>Check-In</label>
-                    <input type="date" id='checkInDate' placeholder='Check-In' className='rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required/>
+                    <input 
+                        type="date" 
+                        id='checkInDate' 
+                        value={formData.checkInDate}
+                        onChange={handleInputChange}
+                        placeholder='Check-In' 
+                        className='rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' 
+                        required
+                    />
                 </div>
                 <div className='w-px h-15 bg-gray-300/70 max-md:hidden'></div>
                 <div className='flex flex-col'>
                     <label htmlFor="checkOutDate" className='font-medium'>Check-Out</label>
-                    <input type="date" id='checkOutDate' placeholder='Check-Out' className='rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required/>
+                    <input 
+                        type="date" 
+                        id='checkOutDate' 
+                        value={formData.checkOutDate}
+                        onChange={handleInputChange}
+                        placeholder='Check-Out' 
+                        className='rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' 
+                        required
+                    />
                 </div>
                 <div className='w-px h-15 bg-gray-300/70 max-md:hidden'></div>
                 <div className='flex flex-col'>
                     <label htmlFor="guests" className='font-medium'>Guests</label>
-                    <input type="number" id='guests' placeholder='0' className='max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' required/>
+                    <input 
+                        type="number" 
+                        id='guests' 
+                        value={formData.guests}
+                        onChange={handleInputChange}
+                        min="1"
+                        placeholder='0' 
+                        className='max-w-20 rounded border border-gray-300 px-3 py-2 mt-1.5 outline-none' 
+                        required
+                    />
                 </div>
 
             </div>
-            <button type="submit" className='bg-primary hover:bg-primary-dull active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-25 md:py-4 py-3 text-base cursor-pointer'>Check Availability</button>
+            
+            {error && (
+                <p className='text-red-500 text-sm mt-2 md:mt-0'>{error}</p>
+            )}
+            
+            {calculateTotalPrice() > 0 && (
+                <p className='text-lg font-medium mt-2 md:mt-0 md:mr-4'>
+                    Total: ${calculateTotalPrice()}
+                </p>
+            )}
+
+            <button 
+                type="submit" 
+                disabled={loading}
+                className='bg-primary hover:bg-primary-dull active:scale-95 transition-all text-white rounded-md max-md:w-full max-md:mt-6 md:px-25 md:py-4 py-3 text-base cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed'
+            >
+                {loading ? 'Processing...' : 'Book Now'}
+            </button>
 
         </form>
         {/* Common Specifiications */}
