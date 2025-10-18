@@ -133,6 +133,8 @@ Feel free to fork this project and raise a Pull Request.
 git clone https://github.com/manishkumar8312/Hotel-Booking.git
 ```
 
+See [CONTRIBUTING.md](CONTRIBUTING.md) for detailed setup, coding standards, and PR process. Please follow our [Code of Conduct](CODE_OF_CONDUCT.md).
+
 You can also use the provided `.env.example` files in both `server/` and `client/` as templates:
 
 ```
