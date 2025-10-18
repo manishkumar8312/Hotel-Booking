@@ -14,6 +14,7 @@ import ListRoom from './pages/hotelOwner/ListRoom';
 import HotelMap from './pages/HotelMap';
 import NotFound from './pages/NotFound';
 import Login from './pages/Login';
+import Signup from './pages/Signup';
 
 const App = () => {
 
@@ -31,6 +32,7 @@ const App = () => {
           <Route path='/my-bookings' element={<MyBookings/>} />
           <Route path='/map' element={<HotelMap/>} />
           <Route path='/login' element={<Login/>} />
+          <Route path='/signup' element={<Signup/>} />
           <Route path='/owner' element={<Layout/>}>
             <Route index element={<Dashboard/>}/>
             <Route path="add-room" element={<AddRoom/>}/>
