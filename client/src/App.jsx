@@ -13,6 +13,7 @@ import AddRoom from './pages/hotelOwner/AddRoom';
 import ListRoom from './pages/hotelOwner/ListRoom';
 import HotelMap from './pages/HotelMap';
 import NotFound from './pages/NotFound';
+import Login from './pages/Login';
 
 const App = () => {
 
@@ -29,6 +30,7 @@ const App = () => {
           <Route path='/rooms/:id' element={<RoomDetails/>} />
           <Route path='/my-bookings' element={<MyBookings/>} />
           <Route path='/map' element={<HotelMap/>} />
+          <Route path='/login' element={<Login/>} />
           <Route path='/owner' element={<Layout/>}>
             <Route index element={<Dashboard/>}/>
             <Route path="add-room" element={<AddRoom/>}/>
