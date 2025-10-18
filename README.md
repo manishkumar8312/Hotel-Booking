@@ -129,7 +129,7 @@ VITE_API_BASE_URL=http://localhost:5000/api
 Feel free to fork this project and raise a Pull Request.
 
 ```bash
-git clone https://github.com/yourusername/QuickStay.git
+git clone https://github.com/manishkumar8312/QuickStay.git
 ```
 
 ---
