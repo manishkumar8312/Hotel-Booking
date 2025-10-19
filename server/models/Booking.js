@@ -54,7 +54,10 @@ const BookingSchema = new mongoose.Schema({
         roomType: String,
         images: [String],
         amenities: [String]
-    }
+    },
+    // Add these:
+    paymentOrderId: { type: String },
+    paymentSignature: { type: String }
 }, {timestamps: true});
 
 // Index for faster queries

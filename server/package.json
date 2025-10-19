@@ -16,10 +16,11 @@
     "@clerk/express": "^1.7.2",
     "cloudinary": "^2.7.0",
     "cors": "^2.8.5",
-    "dotenv": "^16.6.0",
+    "dotenv": "^16.6.1",
     "express": "^5.1.0",
     "mongoose": "^8.16.1",
     "multer": "^2.0.1",
+    "razorpay": "^2.9.6",
     "svix": "^1.68.0"
   },
   "devDependencies": {

@@ -1,6 +1,7 @@
 import { useAuth } from '@clerk/clerk-react';
 
 const API_URL = 'http://localhost:5000/api/bookings';
+const PAY_API_URL = 'http://localhost:5000/api/payments';
 
 // Helper to get auth token
 const getAuthHeader = async (getToken) => {
@@ -90,6 +91,42 @@ export const bookingService = {
             return data;
         } catch (error) {
             console.error('Cancel booking error:', error);
+            throw error;
+        }
+    },
+
+    // Create Razorpay order for a booking
+    createRazorpayOrder: async (bookingId, getToken) => {
+        try {
+            const headers = await getAuthHeader(getToken);
+            const response = await fetch(`${PAY_API_URL}/create-order`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify({ bookingId })
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Failed to create order');
+            return data;
+        } catch (error) {
+            console.error('Create order error:', error);
+            throw error;
+        }
+    },
+
+    // Verify Razorpay payment (also updates booking to paid on server)
+    verifyRazorpayPayment: async (payload, getToken) => {
+        try {
+            const headers = await getAuthHeader(getToken);
+            const response = await fetch(`${PAY_API_URL}/verify`, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(payload)
+            });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.message || 'Failed to verify payment');
+            return data;
+        } catch (error) {
+            console.error('Verify payment error:', error);
             throw error;
         }
     }
