@@ -5,6 +5,10 @@ import { clerkMiddleware } from '@clerk/express';
 import connectDB from './configs/db.js';
 import bookingRoutes from './routes/bookingRoutes.js';
 import clerkWebhooks from './controllers/clerkWebhooks.js';
+import paymentRoutes from './routes/paymentRoutes.js';
+
+// Add this at the very top, before other imports
+import 'dotenv/config';
 
 dotenv.config();
 
@@ -33,6 +37,9 @@ app.get('/health', (_req, res) => {
 
 // Booking routes
 app.use('/api/bookings', bookingRoutes);
+
+// Payment routes
+app.use('/api/payments', paymentRoutes);
 
 // 404 handler (keep last)
 app.use((req, res) => {

@@ -9,6 +9,19 @@ const MyBookings = () => {
     const [bookings, setBookings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [payingId, setPayingId] = useState(null);
+
+    // Dynamically load Razorpay script
+    const loadRazorpay = () => {
+        return new Promise((resolve, reject) => {
+            if (window.Razorpay) return resolve(true);
+            const script = document.createElement('script');
+            script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+            script.onload = () => resolve(true);
+            script.onerror = () => reject(new Error('Failed to load Razorpay SDK'));
+            document.body.appendChild(script);
+        });
+    };
 
     useEffect(() => {
         if (isSignedIn) {
@@ -31,21 +44,59 @@ const MyBookings = () => {
 
     const handlePayNow = async (bookingId) => {
         try {
-            // TODO: Integrate with your payment gateway
-            // For now, just update the payment status
-            const paymentData = {
-                isPaid: true,
-                paymentId: `PAY_${Date.now()}` // Replace with actual payment ID
+            setPayingId(bookingId);
+
+            await loadRazorpay();
+
+            // 1) Create Razorpay order on server
+            const { order } = await bookingService.createRazorpayOrder(bookingId, getToken);
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY_ID,
+                amount: order.amount,
+                currency: order.currency || 'INR',
+                name: 'QuickStay',
+                description: 'Hotel booking payment',
+                order_id: order.id,
+                handler: async (response) => {
+                    try {
+                        // 2) Verify payment on server (this updates booking to Paid)
+                        await bookingService.verifyRazorpayPayment(
+                            {
+                                bookingId,
+                                razorpay_order_id: response.razorpay_order_id,
+                                razorpay_payment_id: response.razorpay_payment_id,
+                                razorpay_signature: response.razorpay_signature,
+                            },
+                            getToken
+                        );
+                        await fetchBookings();
+                        alert('Payment successful!');
+                    } catch (err) {
+                        alert('Payment verification failed: ' + err.message);
+                    }
+                },
+                prefill: {
+                    // Optional: add user details if you have them
+                    name: '',
+                    email: '',
+                    contact: '',
+                },
+                notes: { bookingId },
+                theme: { color: '#4F46E5' },
             };
-            
-            await bookingService.updatePaymentStatus(bookingId, paymentData, getToken);
-            
-            // Refresh bookings
-            fetchBookings();
-            alert('Payment successful!');
-            
+
+            const rzp = new window.Razorpay(options);
+
+            rzp.on('payment.failed', function (resp) {
+                alert('Payment failed: ' + (resp.error?.description || 'Unknown error'));
+            });
+
+            rzp.open();
         } catch (error) {
-            alert('Payment failed: ' + error.message);
+            alert('Payment init failed: ' + error.message);
+        } finally {
+            setPayingId(null);
         }
     };
 
@@ -137,7 +188,7 @@ const MyBookings = () => {
                                             <img src={assets.guestsIcon} alt="guest-icon"/>
                                             <span>Guests: {booking.guests}</span>
                                         </div>
-                                        <p className='text-base'>Total: ${booking.totalPrice}</p>
+                                        <p className='text-base'>Total: ₹{booking.totalPrice}</p>
                                         <p className='text-sm text-gray-500'>
                                             Status: <span className='capitalize font-medium'>{booking.status}</span>
                                         </p>
@@ -172,9 +223,10 @@ const MyBookings = () => {
                                     {!booking.isPaid && booking.status !== 'cancelled' && (
                                         <button 
                                             onClick={() => handlePayNow(booking._id)}
-                                            className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer'
+                                            disabled={payingId === booking._id}
+                                            className='px-4 py-1.5 mt-4 text-xs border border-gray-400 rounded-full hover:bg-gray-50 transition-all cursor-pointer disabled:opacity-60'
                                         >
-                                            Pay Now
+                                            {payingId === booking._id ? 'Processing...' : 'Pay Now'}
                                         </button>
                                     )}
                                     
