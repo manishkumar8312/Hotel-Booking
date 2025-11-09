@@ -2,7 +2,6 @@
 
 **QuickStay** is a full-stack Hotel Booking Web Application built using the **MERN Stack (MongoDB, Express.js, React.js, Node.js)**. It allows users to explore hotels, book stays seamlessly, and manage their reservations efficiently. Admins can list and manage hotel properties through a secure dashboard.
 
-
 ---
 ## 🚀 Features
 
