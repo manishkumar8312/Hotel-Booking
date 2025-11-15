@@ -1,44 +1,46 @@
-# 🏨 QuickStay
 
-**QuickStay** is a full-stack Hotel Booking Web Application built using the **MERN Stack (MongoDB, Express.js, React.js, Node.js)**. It allows users to explore hotels, book stays seamlessly, and manage their reservations efficiently. Admins can list and manage hotel properties through a secure dashboard.
+# QuickStay
 
----
-## 🚀 Features
-
-### 👤 User Functionality
-
-* 🔍 Browse and search for hotels
-* 📅 Book hotels with check-in/check-out dates
-* 🛏 View hotel details with images and amenities
-* 💼 Manage bookings in user dashboard
-* 🔐 Secure login/signup with Clerk authentication
-
-### 🛠 Admin Functionality
-
-* 🏨 Add new hotel listings
-* 📝 Edit hotel details and availability
-* 📊 Dashboard for viewing all bookings
-* 🔒 Protected routes using middleware
+**QuickStay** is a full-stack hotel booking web application built using the **MERN Stack (MongoDB, Express.js, React.js, Node.js)**. It enables users to search for hotels, make reservations seamlessly, and manage their bookings efficiently. Administrators can securely manage hotel listings and monitor all bookings through a dedicated dashboard.
 
 ---
 
-## 🧰 Tech Stack
+## Features
 
-| Technology       | Description                                           |
-| ---------------- | ----------------------------------------------------- |
-| **MongoDB**      | NoSQL Database to store user, hotel, and booking data |
-| **Express.js**   | Backend web framework                                 |
-| **React.js**     | Frontend library for dynamic UI                       |
-| **Node.js**      | Runtime environment for server                        |
-| **Clerk**        | Authentication and user management                    |
-| **Cloudinary**   | Image uploading and hosting                           |
-| **Mongoose**     | MongoDB object modeling                               |
-| **Axios**        | HTTP requests from React to backend                   |
-| **Tailwind CSS** | Utility-first CSS framework for styling               |
+### User Functionality
+
+* Browse and search for hotels
+* Book hotels with check-in and check-out dates
+* View detailed hotel information with images and amenities
+* Manage bookings from the user dashboard
+* Secure login and signup powered by Clerk authentication
+
+### Admin Functionality
+
+* Add new hotel listings
+* Edit hotel details and availability
+* Access an admin dashboard to view and manage all bookings
+* Utilize secure, protected routes through middleware
 
 ---
 
-## 📂 Folder Structure
+## Tech Stack
+
+| Technology       | Description                                              |
+| ---------------- | -------------------------------------------------------- |
+| **MongoDB**      | NoSQL database for storing user, hotel, and booking data |
+| **Express.js**   | Backend framework for handling API routes                |
+| **React.js**     | Frontend library for building dynamic user interfaces    |
+| **Node.js**      | JavaScript runtime for server execution                  |
+| **Clerk**        | User authentication and management                       |
+| **Cloudinary**   | Image upload and asset management                        |
+| **Mongoose**     | ODM for MongoDB schema modeling                          |
+| **Axios**        | HTTP communication between frontend and backend          |
+| **Tailwind CSS** | Utility-first framework for responsive UI styling        |
+
+---
+
+## Folder Structure
 
 ```
 QuickStay/
@@ -60,31 +62,31 @@ QuickStay/
 
 ---
 
-## 🔧 Installation & Setup
+## Installation & Setup
 
-### 🖥️ Backend (Server)
+### Backend (Server)
 
 ```bash
 cd server
 npm install
-npm run server   # Starts Express backend using nodemon
+npm run server
 ```
 
-### 🌐 Frontend (Client)
+### Frontend (Client)
 
 ```bash
 cd client
 npm install
-npm start        # Starts React frontend on http://localhost:3000
+npm start
 ```
 
 ---
 
-## 🔐 Environment Variables
+## Environment Variables
 
-Create `.env` files in both `server/` and `client/` with the following:
+Create `.env` files in both `server/` and `client/` with the following keys:
 
-### For Server
+### Server
 
 ```
 PORT=5000
@@ -95,7 +97,7 @@ CLOUDINARY_API_SECRET=your_api_secret
 CLERK_SECRET_KEY=your_clerk_secret
 ```
 
-### For Client
+### Client
 
 ```
 VITE_CLERK_PUBLISHABLE_KEY=your_clerk_key
@@ -104,29 +106,29 @@ VITE_API_BASE_URL=http://localhost:5000/api
 
 ---
 
-## 🖼️ Screenshots (optional)
+## Screenshots (optional)
 
-> Add images of:
->
-> * Home page
-> * Hotel details page
-> * Booking flow
-> * Admin dashboard
+Recommended additions:
 
----
-
-## 📈 Future Improvements
-
-* ✅ Payment gateway integration (e.g. Razorpay, Stripe)
-* 🌍 Map view for hotel locations
-* 📱 Mobile responsive improvements
-* ✉️ Booking confirmation via email
+* Home page
+* Hotel details page
+* Booking process
+* Admin dashboard
 
 ---
 
-## 🤝 Contribution
+## Future Improvements
 
-Feel free to fork this project and raise a Pull Request.
+* Integration with payment gateways such as Razorpay or Stripe
+* Map-based hotel location view
+* Enhanced mobile responsiveness
+* Email notifications for booking confirmations
+
+---
+
+## Contribution
+
+Contributions are welcome. Fork the repository and submit a Pull Request.
 
 ```bash
 git clone https://github.com/manishkumar8312/QuickStay.git
@@ -134,16 +136,16 @@ git clone https://github.com/manishkumar8312/QuickStay.git
 
 ---
 
-## 📃 License
+## License
 
-This project is open source and available under the [MIT License](LICENSE).
+This project is licensed under the MIT License.
 
 ---
 
-## 🙌 Acknowledgments
+## Acknowledgments
 
-* [Clerk.dev](https://clerk.dev)
-* [Cloudinary](https://cloudinary.com/)
-* [MERN Stack Resources](https://www.mongodb.com/mern-stack)
+* Clerk.dev
+* Cloudinary
+* MERN Stack learning resources
 
 ---
