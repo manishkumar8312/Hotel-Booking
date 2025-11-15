@@ -2,6 +2,7 @@
 
 # QuickStay
 
+![QuickStay](https://github.com/user-attachments/assets/5df84aac-f22d-4ae6-b2bb-e0e825fb6d1c)
 
 **QuickStay** is a full-stack hotel booking web application built using the **MERN Stack**.
 It enables users to search hotels, book stays, and manage reservations with ease.
